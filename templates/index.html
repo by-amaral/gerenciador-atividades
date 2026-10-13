@@ -3,10 +3,27 @@
 {% block content %}
 
 <section class="card">
+  
   <form action="{{ url_for('add') }}" method="post" class="add-form">
-    <input name="title" required placeholder="What do you need to do?">
-    <button type="submit">Adicionar</button>
+      <input
+          name="title"
+          required
+          placeholder="O que você precisa fazer?"
+      >
+
+      <select name="contact_id">
+          <option value="">Sem responsável</option>
+
+          {% for contact in contacts %}
+              <option value="{{ contact.id }}">
+                  {{ contact.name }}
+              </option>
+          {% endfor %}
+      </select>
+
+      <button type="submit">Adicionar</button>
   </form>
+
 </section>
 
     <section class="card">
@@ -22,6 +39,15 @@
 
             <span class="title">{{ task.title }}
             </span>
+
+            <small class="responsavel">
+                Responsável:
+                {% if task.contact %}
+                    {{ task.contact.name }}
+                {% else %}
+                    Não definido
+                {% endif %}
+            </small>
 
             <form action="{{ url_for('delete', task_id=task.id) }}" method="post">
                 <button class="delete" title="Delete" type="submit">×

@@ -35,3 +35,19 @@ body { background: #0b0f14; color: #e5eef7; margin: 0; }
 }
 .empty { opacity: 0.75; }
 .footer { text-align: center; opacity: 0.5; margin: 24px 0 40px; }
+
+.add-form select {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    background: #0b1220;
+    color: #dbeafe;
+    max-width: 200px;
+}
+
+.responsavel {
+    display: block;
+    margin-top: 4px;
+    color: #94a3b8;
+}
+

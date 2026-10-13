@@ -17,7 +17,15 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(160), nullable=False)
     done = db.Column(db.Boolean, default=False, nullable=False)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    created_at = db.Column(
+        db.DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False
+    )
+
+    contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'), nullable=True)
+    contact = db.relationship('Contact', backref='tasks')
+
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,10 +38,21 @@ with app.app_context():
     db.create_all()
 
 
+
 @app.get("/")
 def home():
-    tasks = Task.query.order_by(Task.done.asc(), Task.created_at.desc()).all()
-    return render_template("index.html", tasks=tasks)
+    tasks = Task.query.order_by(
+        Task.done.asc(),
+        Task.created_at.desc()
+    ).all()
+
+    contacts = Contact.query.order_by(Contact.name).all()
+
+    return render_template(
+        "index.html",
+        tasks=tasks,
+        contacts=contacts
+    )
 
 
 @app.get("/contacts")
@@ -57,16 +76,33 @@ def add_contact():
     flash("Contato adicionado.")
     return redirect(url_for("contacts"))
 
+
 @app.post("/add")
 def add():
     title = request.form.get("title", "").strip()
+    contact_id = request.form.get("contact_id")
+
     if not title:
-        flash("Please write something")
+        flash("Informe o título da atividade.")
         return redirect(url_for("home"))
-    db.session.add(Task(title=title))
+
+    contact = None
+
+    if contact_id:
+        contact = db.session.get(Contact, int(contact_id))
+
+        if contact is None:
+            flash("Contato responsável inválido.")
+            return redirect(url_for("home"))
+
+    task = Task(title=title, contact=contact)
+
+    db.session.add(task)
     db.session.commit()
-    flash("Atividade adicionada")
+
+    flash("Atividade adicionada.")
     return redirect(url_for("home"))
+
 
 
 @app.post("/delete/<int:task_id>")
