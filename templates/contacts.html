@@ -1,34 +1,48 @@
 {% extends "base.html" %}
-
 {% block content %}
-<section class="card">
-  <h2>Contatos</h2>
-
-  <form action="{{ url_for('add_contact') }}" method="post">
-    <label for="name">Nome</label>
-      <input id="name" name="name" required>
-
-    <label for="email">E-mail</label>
-      <input id="email" name="email" type="email">
-
-    <label for="phone">Telefone</label>
-      <input id="phone" name="phone" type="tel">
-
-    <button type="submit">Adicionar contato</button>
-  </form>
-
-  {% if contacts %}
-    <ul>
-      {% for contact in contacts %}
-        <li>
-          {{ contact.name }}
-          {% if contact.email %} — {{ contact.email }}{% endif %}
-          {% if contact.phone %} — {{ contact.phone }}{% endif %}
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>Nenhum contato cadastrado ainda.</p>
-  {% endif %}
+<a href="{{ url_for('home') }}" class="back-link">← Voltar</a>
+<section class="form-card">
+    <h2>Contatos</h2>
+    <form action="{{ url_for('add_contact') }}" method="post">
+        <label for="name">Nome *</label>
+        <input id="name" name="name" placeholder="Digite o nome do contato" required>
+        <div class="contact-form-row">
+            <div>
+                <label for="email">E-mail</label>
+                <input id="email" name="email" type="email" placeholder="Digite o e-mail">
+            </div>
+            <div>
+                <label for="phone">Telefone</label>
+                <input id="phone" name="phone" type="tel" placeholder="Digite o telefone">
+            </div>
+        </div>
+        <div class="form-buttons">
+            <a href="{{ url_for('home') }}" class="cancel-button">Cancelar</a>
+            <button type="submit" class="save-button">Adicionar contato</button>
+        </div>
+    </form>
 </section>
+{% if contacts %}
+<section class="card contact-list">
+    <h2>Contatos cadastrados</h2>
+    {% for contact in contacts %}
+    <div class="contact-item">
+        <div class="contact-name">
+            <i class="fa-solid fa-user"></i>
+            {{ contact.name }}
+        </div>
+        <div class="contact-info">
+            {% if contact.email %}
+            <span><i class="fa-solid fa-envelope"></i>{{ contact.email }}</span>
+            {% endif %}
+            {% if contact.phone %}
+            <span><i class="fa-solid fa-phone"></i>{{ contact.phone }}</span>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</section>
+{% else %}
+<p class="empty">Nenhum contato cadastrado ainda.</p>
+{% endif %}
 {% endblock %}

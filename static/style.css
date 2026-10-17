@@ -1,91 +1,132 @@
-:root { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
-* { box-sizing: border-box; }
-body { background: #0b0f14; color: #e5eef7; margin: 0; }
-.container { max-width: 760px; margin: 40px auto; padding: 0 16px; }
-.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.logo { margin: 0; font-weight: 700; }
-.card { background: #101826; border: 1px solid #1e293b; border-radius: 12px; padding: 16px; margin: 12px 0; }
-.add-form { display: flex; gap: 8px; }
-.add-form input {
-  flex: 1; padding: 12px; border-radius: 10px; border: 1px solid #334155;
-  background:#0b1220; color:#dbeafe;
-}
-.add-form button {
-  padding: 12px 16px; border: 0; border-radius: 10px; cursor: pointer;
-}
-.add-form button:hover { filter: brightness(1.1); }
-.tasks { list-style: none; padding: 0; margin: 0; }
-.task {
-  display: grid; grid-template-columns: 40px 1fr auto 40px; align-items: center;
-  gap: 8px; padding: 8px 4px; border-bottom: 1px solid #1e293b;
-}
-.task:last-child { border-bottom: 0; }
-.task-info { min-width: 0; }
-.task .title { display: block; line-height: 1.4; }
-.task.done .title { text-decoration: line-through; opacity: 0.6; }
-.toggle, .delete {
-  width: 36px; height: 36px; border-radius: 10px; border: 1px solid #334155;
-  background:#0b1220; color:#cbd5e1; cursor:pointer;
-}
-.toggle:hover { outline: 2px solid #22c55e55; }
-.delete:hover { outline: 2px solid #ef444455; }
-.flash { list-style: none; padding: 0; margin: 0 0 12px 0; }
-.flash li {
-  background: #065f46; border: 1px solid #10b981; padding: 10px 12px;
-  border-radius: 10px; margin-bottom: 8px; color: #ecfdf5;
-}
-.empty { opacity: 0.75; }
-.footer { text-align: center; opacity: 0.5; margin: 24px 0 40px; }
+:root{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+*{box-sizing:border-box}
+body{background:#141933;color:#e5eef7;margin:0}
+.container{max-width:1100px;margin:40px auto;padding:0 16px}
+.header{display:flex;align-items:center;margin-bottom:20px}
+.logo{margin:0;font-weight:700}
+.card{background:#1a203d;border:1px solid #2a3152;border-radius:12px;padding:0;margin:12px 0;overflow:visible}
 
-.add-form select {
-  padding: 12px; border-radius: 10px; border: 1px solid #334155;
-  background: #0b1220; color: #dbeafe; max-width: 200px;
-}
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.action-card{display:flex;align-items:center;justify-content:center;gap:8px;min-height:80px;background:#1a203d;border:1px solid #2a3152;border-radius:12px;color:#e5eef7;text-decoration:none;font-weight:600}
+.action-card:hover{border-color:#59658f;background:#202748}
+.action-icon{font-size:24px}
 
-.responsavel {
-  display: block; margin-top: 4px; color: #94a3b8;
-}
+.task-columns,.task-card{display:grid;grid-template-columns:minmax(260px,2fr) 1.1fr 1fr 1fr 1fr 45px;align-items:center;gap:16px;padding:14px 18px}
+.task-columns{background:#202748;color:#8f99b5;font-size:11px;font-weight:700;letter-spacing:.5px;border-bottom:1px solid #2a3152}
+.task-card{background:#1a203d;border-bottom:1px solid #2a3152;min-height:70px}
+.task-card:last-child{border-bottom:0}
 
-.status-form { margin: 0; }
-.status {
-  border: 0; border-radius: 20px; padding: 7px 12px;
-  font-weight: 600; cursor: pointer; font-size: 13px;
-  background: #334155; color: white;
-}
-.status option { background: #101826; color: #e5eef7; }
+.task-main{min-width:0}
+.task-main h3{margin:0;color:#f1f5f9;font-size:15px;font-weight:600}
+.task-main p{margin:4px 0 0;color:#8f99b5;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task-contact,.task-due{color:#cbd5e1;font-size:13px}
 
-.quick-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 12px;
-}
+.priority-box{position:relative}
+.priority-button{border:0;background:#292f4d;color:#e5eef7;border-radius:20px;padding:7px 12px;cursor:pointer;font-weight:600;font-size:12px;min-width:100px;text-align:left}
+.priority-button:hover{background:#292f4d;border-radius:6px}
+.priority-button .fa-flag{margin-right:5px}
+.priority-button .priority-low{color:#22c55e}
+.priority-button .priority-medium{color:#eab308}
+.priority-button .priority-high{color:#ef4444}
+.priority-menu{display:none;position:absolute;top:100%;left:0;background:#202748;border:1px solid #2a3152;border-radius:8px;padding:5px;z-index:10;min-width:120px}
+.priority-menu.show{display:block}
+.priority-menu button{display:block;width:100%;border:0;background:transparent;color:#e5eef7;text-align:left;padding:7px 8px;border-radius:5px;cursor:pointer}
+.priority-menu button:hover{background:#292f4d}
+.priority-menu button:nth-child(1) .fa-flag{color:#22c55e}
+.priority-menu button:nth-child(2) .fa-flag{color:#eab308}
+.priority-menu button:nth-child(3) .fa-flag{color:#ef4444}
 
-.action-card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-height: 90px;
-    background: #101826;
-    border: 1px solid #1e293b;
-    border-radius: 12px;
-    color: #e5eef7;
-    text-decoration: none;
-    font-weight: 600;
+.status{border:0;border-radius:20px;padding:7px 10px;font-weight:600;cursor:pointer;font-size:12px;width:100%;background:#292f4d;color:#e5eef7}
+.status option{background:#1a203d;color:#e5eef7}
+
+.delete{background:transparent;border:0;color:#7f89a8;font-size:16px;cursor:pointer}
+.delete:hover{color:#f87171}
+.empty{opacity:.75;padding:20px}
+
+.flash{list-style:none;padding:0;margin:0 0 12px}
+.flash li{background:#065f46;border:1px solid #10b981;padding:10px 12px;border-radius:10px;margin-bottom:8px;color:#ecfdf5}
+
+.footer{text-align:center;opacity:.5;margin:24px 0 40px}
+
+.form-card{background:#1a203d;border:1px solid #2a3152;border-radius:12px;padding:24px}
+.form-card h2{margin-top:0}
+.form-card label{display:block;margin:14px 0 6px;color:#cbd5e1;font-size:14px}
+.form-card input,.form-card textarea,.form-card select{width:100%;padding:11px;border-radius:8px;border:1px solid #33415f;background:#11162d;color:#e5eef7}
+.form-card textarea{min-height:100px;resize:vertical}
+
+.form-buttons{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.cancel-button,.save-button{padding:10px 16px;border-radius:8px;text-decoration:none;border:0;cursor:pointer}
+.cancel-button{background:#29304d;color:#cbd5e1}
+.save-button{background:#6366f1;color:white}
+
+@media(max-width:850px){
+.container{max-width:100%}
+.task-columns{display:none}
+.task-card{grid-template-columns:1fr 1fr;gap:10px}
+.task-main{grid-column:1/-1}
+.task-contact,.task-due,.task-card form{min-width:0}
 }
 
-.action-card:hover {
-    border-color: #475569;
-    background: #141e2d;
+@media(max-width:600px){
+.quick-actions{grid-template-columns:1fr}
+.task-card{grid-template-columns:1fr}
+.task-main{grid-column:auto}
 }
+.status-box{position:relative}
+.status-button{border:0;background:#292f4d;color:#e5eef7;border-radius:20px;padding:7px 12px;cursor:pointer;font-weight:600;font-size:12px;min-width:105px;text-align:left}
+.status-button:hover{background:#343b5c}
+.status-menu{display:none;position:absolute;top:100%;left:0;background:#202748;border:1px solid #2a3152;border-radius:8px;padding:5px;z-index:20;min-width:125px}
+.status-menu.show{display:block}
+.status-menu button{display:flex;align-items:center;gap:7px;width:100%;border:0;background:transparent;color:#e5eef7;text-align:left;padding:7px 8px;border-radius:5px;cursor:pointer}
+.status-menu button:hover{background:#292f4d}
+.status-dot{display:inline-block;width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.status-todo{background:#60a5fa}
+.status-doing{background:#eab308}
+.status-done{background:#22c55e}
+.status-late{background:#ef4444}
+.back-link{display:inline-block;color:#8f99b5;margin-bottom:12px;text-decoration:none;font-size:13px}
+.back-link:hover{color:#e5eef7}
+.form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.form-row>div{min-width:0}
 
-.action-icon {
-    font-size: 24px;
+@media(max-width:700px){
+.form-row{grid-template-columns:1fr}
 }
-
-@media (max-width: 600px) {
-    .quick-actions {
-        grid-template-columns: 1fr;
-    }
+.contact-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.contact-form-row>div{min-width:0}
+.contact-list{padding:24px}
+.contact-list h2{margin-top:0}
+.contact-item{padding:14px 0;border-bottom:1px solid #2a3152}
+.contact-item:last-child{border-bottom:0}
+.contact-name{color:#f1f5f9;font-weight:600;font-size:14px;margin-bottom:8px}
+.contact-name i{margin-right:7px}
+.contact-info{display:flex;gap:20px;color:#8f99b5;font-size:13px}
+.contact-info span{display:flex;align-items:center;gap:6px}
+@media(max-width:700px){
+.contact-form-row{grid-template-columns:1fr}
+.contact-info{flex-direction:column;gap:6px}
 }
+.theme-button{margin-left:auto;background:#292f4d;border:1px solid #3a4265;color:#e5eef7;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:15px}
+.theme-button:hover{background:#343b5c}
+html.light-mode body{background:#f1f3f8;color:#1e293b}
+html.light-mode .form-card{background:#fff;border-color:#d9deea}
+html.light-mode .form-card h2{color:#172033}
+html.light-mode .form-card label{color:#334155!important}
+html.light-mode .form-card input,html.light-mode .form-card textarea,html.light-mode .form-card select{background:#f8fafc;color:#1e293b;border-color:#cbd5e1}
+html.light-mode .form-card input::placeholder,html.light-mode .form-card textarea::placeholder{color:#64748b}
+html.light-mode .back-link{color:#475569!important}
+html.light-mode .back-link:hover{color:#172033!important}
+html.light-mode .card,html.light-mode .action-card,html.light-mode .task-card{background:#fff;border-color:#d9deea}
+html.light-mode .task-columns{background:#e9edf5;border-color:#d9deea;color:#334155}
+html.light-mode .task-main h3{color:#172033}
+html.light-mode .task-main p{color:#475569}
+html.light-mode .task-contact,html.light-mode .task-due{color:#334155}
+html.light-mode .action-card{color:#172033}
+html.light-mode .priority-button,html.light-mode .status-button{background:#eef1f7;color:#1e293b}
+html.light-mode .priority-menu,html.light-mode .status-menu{background:#fff;border-color:#cbd5e1}
+html.light-mode .priority-menu button,html.light-mode .status-menu button{color:#1e293b}
+html.light-mode .priority-menu button:hover,html.light-mode .status-menu button:hover{background:#eef1f7}
+html.light-mode .contact-name{color:#172033}
+html.light-mode .contact-info{color:#475569}
+html.light-mode .empty{color:#475569}
+html.light-mode .delete{color:#475569}

@@ -1,39 +1,57 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-br">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Flask To-Do (Base Layout)</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Flask To-Do</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <script>
+    if(localStorage.getItem("theme") === "light"){
+      document.documentElement.classList.add("light-mode");
+    }
+  </script>
 </head>
 <body>
   <main class="container">
     <header class="header">
       <h1 class="logo">📝 Flask To-Do</h1>
-      <nav>
-        <a href="{{ url_for('home') }}">Tarefas</a>
-        <a href="{{ url_for('contacts') }}">Contatos</a>
-      </nav>
+      {% if request.endpoint == "home" %}
+      <button class="theme-button" onclick="toggleTheme()" title="Alterar tema">
+        <i class="fa-solid fa-sun"></i>
+      </button>
+      {% endif %}
     </header>
-
     {% with messages = get_flashed_messages() %}
-
     {% if messages %}
-
     <ul class="flash">
       {% for message in messages %}
-
-      <li>{{message}}</li>
-
+      <li>{{ message }}</li>
       {% endfor %}
     </ul>
-
-    {% endif %} {% block content %} {% endblock %} {% endwith %}
-
-
+    {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
   </main>
-    <footer class="footer">
-      <small>Built with Flask &amp; SQLite</small>
-    </footer>
+  <footer class="footer">
+    <small>Built with Flask &amp; SQLite</small>
+  </footer>
+  <script>
+    function toggleTheme(){
+      document.documentElement.classList.toggle("light-mode");
+      const isLight = document.documentElement.classList.contains("light-mode");
+      localStorage.setItem("theme", isLight ? "light" : "dark");
+      const button = document.querySelector(".theme-button i");
+      if(button){
+        button.className = isLight ? "fa-solid fa-moon" : "fa-solid fa-sun";
+      }
+    }
+    document.addEventListener("DOMContentLoaded", function(){
+      const button = document.querySelector(".theme-button i");
+      if(button && document.documentElement.classList.contains("light-mode")){
+        button.className = "fa-solid fa-moon";
+      }
+    });
+  </script>
 </body>
 </html>

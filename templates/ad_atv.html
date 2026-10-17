@@ -1,46 +1,49 @@
 {% extends "base.html" %}
-
 {% block content %}
 
-<section class="form-card">
+<a href="{{ url_for('home') }}" class="back-link">← Voltar</a>
 
+<section class="form-card">
     <h2>Nova atividade</h2>
 
-    <form>
-
-        <label>Nome da atividade</label>
-        <input type="text" placeholder="Digite o nome da atividade">
+    <form action="{{ url_for('add') }}" method="post">
+        <label>Título *</label>
+        <input type="text" name="title" placeholder="Digite o nome da atividade" required>
 
         <label>Descrição</label>
-        <textarea placeholder="Digite uma descrição"></textarea>
+        <textarea name="description" placeholder="Digite uma descrição"></textarea>
 
-        <label>Prioridade</label>
-        <select>
-            <option>🟢 Baixa</option>
-            <option selected>🟡 Média</option>
-            <option>🔴 Alta</option>
-        </select>
+        <div class="form-row">
+            <div>
+                <label>Prazo</label>
+                <input type="text" name="due_date" placeholder="DD/MM/AAAA">
+            </div>
 
-        <label>Prazo</label>
-        <input type="date">
+            <div>
+                <label>Prioridade</label>
+                <select name="priority">
+                    <option value="Baixa">Baixa</option>
+                    <option value="Média" selected>Média</option>
+                    <option value="Alta">Alta</option>
+                </select>
+            </div>
 
-        <label>Responsável</label>
-        <select>
-            <option>Não definido</option>
-        </select>
-
-        <div class="form-buttons">
-            <a href="{{ url_for('index') }}" class="cancel-button">
-                Cancelar
-            </a>
-
-            <button type="submit" class="save-button">
-                Salvar atividade
-            </button>
+            <div>
+                <label>Responsável</label>
+                <select name="contact_id">
+                    <option value="">Não definido</option>
+                    {% for contact in contacts %}
+                    <option value="{{ contact.id }}">{{ contact.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
 
+        <div class="form-buttons">
+            <a href="{{ url_for('home') }}" class="cancel-button">Cancelar</a>
+            <button type="submit" class="save-button">Salvar</button>
+        </div>
     </form>
-
 </section>
 
 {% endblock %}
