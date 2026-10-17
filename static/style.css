@@ -16,11 +16,12 @@ body { background: #0b0f14; color: #e5eef7; margin: 0; }
 .add-form button:hover { filter: brightness(1.1); }
 .tasks { list-style: none; padding: 0; margin: 0; }
 .task {
-  display: grid; grid-template-columns: 40px 1fr 40px; align-items: center;
+  display: grid; grid-template-columns: 40px 1fr auto 40px; align-items: center;
   gap: 8px; padding: 8px 4px; border-bottom: 1px solid #1e293b;
 }
 .task:last-child { border-bottom: 0; }
-.task .title { line-height: 1.4; }
+.task-info { min-width: 0; }
+.task .title { display: block; line-height: 1.4; }
 .task.done .title { text-decoration: line-through; opacity: 0.6; }
 .toggle, .delete {
   width: 36px; height: 36px; border-radius: 10px; border: 1px solid #334155;
@@ -37,17 +38,54 @@ body { background: #0b0f14; color: #e5eef7; margin: 0; }
 .footer { text-align: center; opacity: 0.5; margin: 24px 0 40px; }
 
 .add-form select {
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #334155;
-    background: #0b1220;
-    color: #dbeafe;
-    max-width: 200px;
+  padding: 12px; border-radius: 10px; border: 1px solid #334155;
+  background: #0b1220; color: #dbeafe; max-width: 200px;
 }
 
 .responsavel {
-    display: block;
-    margin-top: 4px;
-    color: #94a3b8;
+  display: block; margin-top: 4px; color: #94a3b8;
 }
 
+.status-form { margin: 0; }
+.status {
+  border: 0; border-radius: 20px; padding: 7px 12px;
+  font-weight: 600; cursor: pointer; font-size: 13px;
+  background: #334155; color: white;
+}
+.status option { background: #101826; color: #e5eef7; }
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.action-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 90px;
+    background: #101826;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    color: #e5eef7;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.action-card:hover {
+    border-color: #475569;
+    background: #141e2d;
+}
+
+.action-icon {
+    font-size: 24px;
+}
+
+@media (max-width: 600px) {
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+}

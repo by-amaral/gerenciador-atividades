@@ -17,6 +17,7 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(160), nullable=False)
     done = db.Column(db.Boolean, default=False, nullable=False)
+    status = db.Column(db.String(20), default="A fazer", nullable=False)
     created_at = db.Column(
         db.DateTime,
         default=lambda: datetime.now(timezone.utc),
@@ -37,6 +38,17 @@ class Contact(db.Model):
 with app.app_context():
     db.create_all()
 
+    with db.engine.connect() as connection:
+        result = connection.execute(db.text("PRAGMA table_info(task)"))
+        columns = [row[1] for row in result]
+
+        if "status" not in columns:
+            connection.execute(
+                db.text(
+                    "ALTER TABLE task ADD COLUMN status VARCHAR(20) DEFAULT 'A fazer'"
+                )
+            )
+            connection.commit()
 
 
 @app.get("/")
@@ -60,6 +72,10 @@ def contacts():
     contact_list = Contact.query.order_by(Contact.name).all()
     return render_template("contacts.html", contacts=contact_list)
 
+@app.get("/ad_atv")
+def ad_atv():
+    contacts = Contact.query.order_by(Contact.name).all()
+    return render_template("ad_atv.html", contacts=contacts)
 
 @app.post("/contacts/add")
 def add_contact():
@@ -122,6 +138,19 @@ def toggle(task_id):
     flash("Marcado como concluído" if task.done else "Ativo")
     return redirect(url_for("home"))
 
+@app.post("/status/<int:task_id>")
+def change_status(task_id):
+    task = Task.query.get_or_404(task_id)
+
+    status = request.form.get("status")
+
+    if status in ["A fazer", "Fazendo", "Concluída", "Atrasada"]:
+        task.status = status
+        task.done = status == "Concluída"
+
+        db.session.commit()
+
+    return redirect(url_for("home"))
 
 if __name__ == '__main__':
     app.run(debug=True)

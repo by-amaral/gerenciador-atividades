@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="form-card">
+
+    <h2>Nova atividade</h2>
+
+    <form>
+
+        <label>Nome da atividade</label>
+        <input type="text" placeholder="Digite o nome da atividade">
+
+        <label>Descrição</label>
+        <textarea placeholder="Digite uma descrição"></textarea>
+
+        <label>Prioridade</label>
+        <select>
+            <option>🟢 Baixa</option>
+            <option selected>🟡 Média</option>
+            <option>🔴 Alta</option>
+        </select>
+
+        <label>Prazo</label>
+        <input type="date">
+
+        <label>Responsável</label>
+        <select>
+            <option>Não definido</option>
+        </select>
+
+        <div class="form-buttons">
+            <a href="{{ url_for('index') }}" class="cancel-button">
+                Cancelar
+            </a>
+
+            <button type="submit" class="save-button">
+                Salvar atividade
+            </button>
+        </div>
+
+    </form>
+
+</section>
+
+{% endblock %}

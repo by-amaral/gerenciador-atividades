@@ -2,67 +2,112 @@
 
 {% block content %}
 
-<section class="card">
-  
-  <form action="{{ url_for('add') }}" method="post" class="add-form">
-      <input
-          name="title"
-          required
-          placeholder="O que você precisa fazer?"
-      >
+<section class="quick-actions">
 
-      <select name="contact_id">
-          <option value="">Sem responsável</option>
+    <a href="{{ url_for('ad_atv') }}" class="action-card">
+        <span class="action-icon">+</span>
+        <span>Nova atividade</span>
+    </a>
 
-          {% for contact in contacts %}
-              <option value="{{ contact.id }}">
-                  {{ contact.name }}
-              </option>
-          {% endfor %}
-      </select>
-
-      <button type="submit">Adicionar</button>
-  </form>
+    <a href="{{ url_for('contacts') }}" class="action-card">
+        <span class="action-icon">+</span>
+        <span>Novo contato</span>
+    </a>
 
 </section>
 
-    <section class="card">
+
+<section class="card">
+
     {% if tasks %}
-      <ul class="tasks">
+
+    <ul class="tasks">
+
         {% for task in tasks %}
-            <li class="task{% if task.done %} done{% endif %}">
 
-              <form action="{{ url_for('toggle', task_id=task.id) }}" method="post">
-                <button class="toggle" type="submit">✓
-                </button>
-              </form>
+        <li class="task{% if task.done %} done{% endif %}">
 
-            <span class="title">{{ task.title }}
-            </span>
+            <form action="{{ url_for('toggle', task_id=task.id) }}" method="post">
+                <button class="toggle" type="submit">✓</button>
+            </form>
 
-            <small class="responsavel">
-                Responsável:
-                {% if task.contact %}
-                    {{ task.contact.name }}
-                {% else %}
-                    Não definido
-                {% endif %}
-            </small>
+            <div class="task-info">
+
+                <span class="title">
+                    {{ task.title }}
+                </span>
+
+                <small class="responsavel">
+                    Responsável:
+                    {% if task.contact %}
+                        {{ task.contact.name }}
+                    {% else %}
+                        Não definido
+                    {% endif %}
+                </small>
+
+            </div>
+
+            <form
+                action="{{ url_for('change_status', task_id=task.id) }}"
+                method="post"
+                class="status-form"
+            >
+
+                <select
+                    name="status"
+                    class="status"
+                    onchange="this.form.submit()"
+                >
+
+                    <option value="A fazer"
+                        {% if task.status == "A fazer" %}selected{% endif %}>
+                        🟡 A fazer
+                    </option>
+
+                    <option value="Fazendo"
+                        {% if task.status == "Fazendo" %}selected{% endif %}>
+                        🔵 Fazendo
+                    </option>
+
+                    <option value="Concluída"
+                        {% if task.status == "Concluída" %}selected{% endif %}>
+                        🟢 Concluída
+                    </option>
+
+                    <option value="Atrasada"
+                        {% if task.status == "Atrasada" %}selected{% endif %}>
+                        🔴 Atrasada
+                    </option>
+
+                </select>
+
+            </form>
 
             <form action="{{ url_for('delete', task_id=task.id) }}" method="post">
-                <button class="delete" title="Delete" type="submit">×
-                </button>
-            </form>  
 
-            </li>
+                <button
+                    class="delete"
+                    title="Delete"
+                    type="submit"
+                >
+                    ×
+                </button>
+
+            </form>
+
+        </li>
 
         {% endfor %}
-      </ul>
 
-        {% else %}
-          <p class="empty">Nenhuma tarefa ainda.</p>
+    </ul>
+
+    {% else %}
+
+        <p class="empty">Nenhuma tarefa ainda.</p>
+
     {% endif %}
-    </section>
 
-    
+</section>
+
 {% endblock %}
