@@ -52,6 +52,14 @@ with app.app_context():
         result = connection.execute(db.text("PRAGMA table_info(task)"))
         columns = [row[1] for row in result]
 
+        if "contact_id" not in columns:
+            connection.execute(
+                db.text(
+                    "ALTER TABLE task ADD COLUMN contact_id INTEGER REFERENCES contact(id)"
+                    )
+                )
+        connection.commit()
+
         if "status" not in columns:
             connection.execute(
                 db.text(
@@ -59,6 +67,14 @@ with app.app_context():
                 )
             )
             connection.commit()
+        
+        connection.execute(
+                db.text(
+                    "UPDATE task SET status = 'Concluída' "
+                    "WHERE done = 1 AND status = 'A fazer'"
+                )
+            )
+        connection.commit()
 
         if "description" not in columns:
             connection.execute(
@@ -91,6 +107,25 @@ def home():
         Task.done.asc(),
         Task.created_at.desc()
     ).all()
+
+    hoje = datetime.now().date()
+    alterou_status = False
+
+    for task in tasks:
+        if not task.due_date or task.done or task.status == "Concluída":
+            continue
+
+        try:
+            prazo = datetime.strptime(task.due_date, "%d/%m/%Y").date()
+        except ValueError:
+            continue
+
+        if prazo < hoje and task.status != "Atrasada":
+            task.status = "Atrasada"
+            alterou_status = True
+
+    if alterou_status:
+        db.session.commit()
 
     contacts = Contact.query.order_by(Contact.name).all()
 
@@ -144,6 +179,14 @@ def add():
     description = request.form.get("description", "").strip()
     priority = request.form.get("priority", "Média")
     due_date = request.form.get("due_date", "").strip()
+
+    if due_date:
+        try:
+            due_date = datetime.strptime(due_date, "%Y-%m-%d").strftime("%d/%m/%Y")
+        except ValueError:
+            flash("Prazo inválido.")
+            return redirect(url_for("ad_atv"))
+
     contact_id = request.form.get("contact_id")
 
     if not title:
@@ -192,6 +235,8 @@ def toggle(task_id):
     task = Task.query.get_or_404(task_id)
 
     task.done = not task.done
+ 
+    task.status = "Concluída" if task.done else "A fazer"
 
     db.session.commit()
 
