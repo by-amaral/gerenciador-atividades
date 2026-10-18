@@ -10,38 +10,104 @@
         <span>Novo contato</span>
     </a>
 </section>
+
+<section class="card progress-card">
+  <div class="progress-ring"
+       style="--progress: {{ resumo.percentual }};"
+       role="progressbar"
+       aria-label="Atividades concluídas"
+       aria-valuemin="0"
+       aria-valuemax="100"
+       aria-valuenow="{{ resumo.percentual }}">
+    <span>{{ resumo.percentual }}%</span>
+  </div>
+
+  <div class="progress-copy">
+    <h2>Seu progresso</h2>
+    <p>{{ resumo.concluidas }} de {{ resumo.total }} concluídas ({{ resumo.percentual }}%)</p>
+  </div>
+
+  <p class="progress-late">{{ resumo.atrasadas }} atrasadas</p>
+</section>
+
+<nav aria-label="Filtrar tarefas">
+    <a href="{{ url_for('home', filtro='todas') }}" {% if filtro == 'todas' %}aria-current="page"{% endif %}>Todas ({{ resumo.total }})</a>
+    <a href="{{ url_for('home', filtro='hoje') }}" {% if filtro == 'hoje' %}aria-current="page"{% endif %}>Hoje ({{ grupos['hoje']|length }})</a>
+    <a href="{{ url_for('home', filtro='semana') }}" {% if filtro == 'semana' %}aria-current="page"{% endif %}>Esta semana ({{ grupos['semana']|length }})</a>
+    <a href="{{ url_for('home', filtro='atrasadas') }}" {% if filtro == 'atrasadas' %}aria-current="page"{% endif %}>Atrasadas ({{ resumo.atrasadas }})</a>
+    <a href="{{ url_for('home', filtro='concluidas') }}" {% if filtro == 'concluidas' %}aria-current="page"{% endif %}>Concluídas ({{ resumo.concluidas }})</a>
+</nav>
+
 <section class="card">
-{% if tasks %}
+{% if tasks and (filtro == 'todas' or grupos[filtro]) %}
 <div class="task-list">
-    <div class="task-columns">
-        <span>ATIVIDADE</span>
-        <span>RESPONSÁVEL</span>
-        <span>PRAZO</span>
-        <span>PRIORIDADE</span>
-        <span>STATUS</span>
-        <span></span>
-    </div>
-    {% for task in tasks %}
-    <article class="task-card">
+
+    {% for chave, titulo in [
+
+        ('atrasadas', 'Atrasadas'),
+        ('hoje', 'Hoje'),
+        ('semana', 'Esta semana'),
+        ('depois', 'Depois'),
+        ('sem_prazo', 'Sem prazo'),
+        ('concluidas', 'Concluídas')
+
+    ] %}
+
+    {% if grupos[chave] and (filtro == 'todas' or filtro == chave) %}
+    {% if chave == 'concluidas' %}
+    <details class="completed-group" {% if filtro == 'concluidas' %}open{% endif %}>
+        <summary>Concluídas ({{ grupos[chave]|length }})</summary>
+    {% else %}
+    <h2>{{ titulo }}</h2>
+    {% endif %}
+    {% for task in grupos[chave] %}
+
+    <article class="task-card{% if task.done or task.status == 'Concluída' %} is-completed{% endif %}{% if chave == 'atrasadas' %} is-overdue{% endif %}">
         <div class="task-main">
+            <form class="task-toggle-form"
+                action="{{ url_for('toggle', task_id=task.id) }}"
+                method="post">
+            <button class="task-toggle"
+                type="submit"
+                aria-label="{% if task.done or task.status == 'Concluída' %}Reabrir{% else %}Concluir{% endif %} a atividade {{ task.title }}">
+            <svg class="task-check-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 12 L9 17 L20 6"></path>
+            </svg>
+        </button>
+    </form>
+
+        <div class="task-copy">
             <h3>{{ task.title }}</h3>
             {% if task.description %}
             <p>{{ task.description }}</p>
             {% endif %}
         </div>
+    </div>
         <div class="task-contact">
-            <i class="fa-solid fa-user"></i>
-            {% if task.contact %}{{ task.contact.name }}{% else %}Não definido{% endif %}
+            {% if task.contact %}
+            <span class="avatar av-{{ task.contact.id % 5 }}" aria-hidden="true">
+                {{ task.contact.name[0]|upper }}
+            </span>
+            <span>{{ task.contact.name }}</span>
+            {% else %}
+            <span class="avatar avatar-empty" aria-hidden="true">?</span>
+            <span>Não definido</span>
+            {% endif %}
         </div>
         <div class="task-due">
             <i class="fa-solid fa-calendar"></i>
             {% if task.due_date %}{{ task.due_date }}{% else %}Sem prazo{% endif %}
         </div>
         <div class="priority-box">
-            <button class="priority-button" type="button" onclick="this.nextElementSibling.classList.toggle('show')">
-                <i class="fa-solid fa-flag {% if task.priority == 'Baixa' %}priority-low{% elif task.priority == 'Média' %}priority-medium{% else %}priority-high{% endif %}"></i>
-                {{ task.priority }}
-            </button>
+        <button class="priority-button"
+                data-priority="{{ task.priority }}"
+                type="button"
+                aria-expanded="false">
+            {{ task.priority }}
+            <span class="priority-bars" aria-hidden="true">
+                <span></span><span></span><span></span>
+        </span>
+    </button>
             <div class="priority-menu">
                 <form action="{{ url_for('change_priority', task_id=task.id) }}" method="post">
                     <button type="submit" name="priority" value="Baixa">
@@ -57,7 +123,7 @@
             </div>
         </div>
         <div class="status-box">
-            <button class="status-button" type="button" onclick="this.nextElementSibling.classList.toggle('show')">
+            <button class="status-button" type="button" aria-expanded="false">
                 <span class="status-dot {% if task.status == 'A fazer' %}status-todo{% elif task.status == 'Fazendo' %}status-doing{% elif task.status == 'Concluída' %}status-done{% else %}status-late{% endif %}"></span>
                 {{ task.status }}
             </button>
@@ -89,9 +155,28 @@
         </form>
     </article>
     {% endfor %}
-</div>
+    {% if chave == 'concluidas' %}
+    </details>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+    </div>
 {% else %}
-<p class="empty">Nenhuma tarefa ainda.</p>
+{% if not tasks %}
+<div class="empty">
+    <h2>Seu planner está vazio.</h2>
+    <p>Comece criando a primeira atividade.</p>
+    <a href="{{ url_for('ad_atv') }}">Nova atividade</a>
+</div>
+{% elif filtro == 'hoje' %}
+<div class="empty"><h2>Nada para hoje.</h2><p>Aproveite o descanso.</p></div>
+{% elif filtro == 'semana' %}
+<div class="empty"><h2>Semana livre.</h2><p>Nenhum prazo nos próximos 7 dias.</p></div>
+{% elif filtro == 'atrasadas' %}
+<div class="empty"><h2>Nenhuma atrasada.</h2><p>Tudo em dia, continue assim.</p></div>
+{% elif filtro == 'concluidas' %}
+<div class="empty"><h2>Nada concluído ainda.</h2><p>Marque uma atividade para vê-la aqui.</p></div>
+{% endif %}
 {% endif %}
 </section>
 {% endblock %}

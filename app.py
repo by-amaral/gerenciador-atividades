@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta, date
 
 
 app = Flask(__name__)
@@ -127,14 +127,72 @@ def home():
     if alterou_status:
         db.session.commit()
 
+    grupos = {
+    "atrasadas": [],
+    "hoje": [],
+    "semana": [],
+    "depois": [],
+    "sem_prazo": [],
+    "concluidas": [],
+    }
+
+    prazos = {}
+    ordem_prioridade = {"Alta": 0, "Média": 1, "Baixa": 2}
+
+    for task in tasks:
+        try:
+            prazo = (
+                datetime.strptime(task.due_date, "%d/%m/%Y").date()
+                if task.due_date else None
+            )
+        except ValueError:
+            prazo = None
+
+        prazos[task.id] = prazo
+
+        if task.done or task.status == "Concluída":
+            grupos["concluidas"].append(task)
+        elif task.status == "Atrasada" or (prazo and prazo < hoje):
+            grupos["atrasadas"].append(task)
+        elif prazo is None:
+            grupos["sem_prazo"].append(task)
+        elif prazo == hoje:
+            grupos["hoje"].append(task)
+        elif prazo <= hoje + timedelta(days=7):
+            grupos["semana"].append(task)
+        else:
+            grupos["depois"].append(task)
+
+    for itens in grupos.values():
+        itens.sort(key=lambda task: task.created_at, reverse=True)
+        itens.sort(key=lambda task: ordem_prioridade.get(task.priority, 3))
+        itens.sort(key=lambda task: prazos[task.id] or date.max)
+
+    total = len(tasks)
+    concluidas = len(grupos["concluidas"])
+
+    resumo = {
+        "total": total,
+        "concluidas": concluidas,
+        "atrasadas": len(grupos["atrasadas"]),
+        "percentual": round(concluidas * 100 / total) if total else 0,
+    }
+
+    filtro = request.args.get("filtro", "todas")
+    if filtro not in ("todas", "hoje", "semana", "atrasadas", "concluidas"):
+        filtro = "todas"
+
     contacts = Contact.query.order_by(Contact.name).all()
 
     return render_template(
         "index.html",
         tasks=tasks,
-        contacts=contacts
+        contacts=contacts,
+        grupos=grupos,
+        resumo=resumo,
+        filtro=filtro,
+        hoje=hoje
     )
-
 
 @app.get("/contacts")
 def contacts():

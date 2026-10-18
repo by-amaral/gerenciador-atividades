@@ -1,22 +1,37 @@
 <!doctype html>
 <html lang="pt-br">
+
+<script src="{{ url_for('static', filename='app.js') }}" defer></script>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Flask To-Do</title>
+  <title>Gerenciador de Atividades</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <script>
-    if(localStorage.getItem("theme") === "light"){
+    const savedTheme = localStorage.getItem("theme");
+    const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    if (savedTheme === "light" || (savedTheme === null && !systemDark)) {
       document.documentElement.classList.add("light-mode");
+    } else {
+      document.documentElement.classList.add("dark-mode");
     }
+
   </script>
 </head>
 <body>
   <main class="container">
     <header class="header">
-      <h1 class="logo">📝 Flask To-Do</h1>
+      <h1 class="logo">Gerenciador de Atividades</h1>
       {% if request.endpoint == "home" %}
+      <time class="header-date" datetime="{{ hoje.isoformat() }}">
+        {{ ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'][hoje.weekday()] }}, {{ hoje.strftime('%d/%m/%Y') }}
+      </time>
       <button class="theme-button" onclick="toggleTheme()" title="Alterar tema">
         <i class="fa-solid fa-sun"></i>
       </button>
@@ -40,6 +55,7 @@
     function toggleTheme(){
       document.documentElement.classList.toggle("light-mode");
       const isLight = document.documentElement.classList.contains("light-mode");
+      document.documentElement.classList.toggle("dark-mode", !isLight);
       localStorage.setItem("theme", isLight ? "light" : "dark");
       const button = document.querySelector(".theme-button i");
       if(button){
