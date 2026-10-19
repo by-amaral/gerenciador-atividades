@@ -508,6 +508,7 @@ html .task-list .task-main p {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     overflow: hidden;
 }
 
@@ -536,6 +537,8 @@ html .task-list .task-main p {
     height: 44px;
     display: grid;
     place-items: center;
+}
+
 }
 
 :where(a, button, input, select, textarea, summary):focus-visible {
@@ -823,4 +826,356 @@ html .task-list .task-main p {
     .header .theme-button {
         margin-left: auto;
     }
-}deuro
+}
+
+    
+/* Formulario Nova atividade */
+
+.form-card {
+    background: var(--surface);
+    color: var(--text);
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 5px 5px 0 var(--shadow-color);
+    margin: 12px 0 20px;
+}
+
+.form-card h2 {
+    margin: 0 0 24px;
+    color: var(--text);
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.form-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.form-card label {
+    display: block;
+    margin: 0 0 8px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.form-card input,
+.form-card textarea,
+.form-card select {
+    width: 100%;
+    min-width: 0;
+    min-height: 48px;
+    padding: 12px 14px;
+    margin: 0 0 20px;
+    border: 2px solid var(--ink);
+    border-radius: 9px;
+    background: var(--surface-2);
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+}
+
+.form-card textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-card input::placeholder,
+.form-card textarea::placeholder {
+    color: var(--text-muted);
+    opacity: 0.85;
+}
+
+.form-card input:focus,
+.form-card textarea:focus,
+.form-card select:focus {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.form-row > div {
+    min-width: 0;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.cancel-button,
+.save-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 10px 20px;
+    border: 2px solid var(--ink);
+    border-radius: 9px;
+    box-shadow: 3px 3px 0 var(--shadow-color);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 150ms ease,
+                box-shadow 150ms ease;
+}
+
+.cancel-button {
+    background: var(--surface-2);
+    color: var(--text);
+}
+
+.save-button {
+    background: var(--accent);
+    color: var(--accent-text);
+}
+
+.cancel-button:hover,
+.save-button:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--shadow-color);
+}
+
+.cancel-button:focus-visible,
+.save-button:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    color: var(--accent);
+}
+
+@media (max-width: 700px) {
+    .form-card {
+        padding: 20px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .form-card h2 {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 400px) {
+    .form-buttons {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .cancel-button,
+    .save-button {
+        width: 100%;
+    }
+}
+
+
+
+/* Formulario com o estilo da pagina inicial */
+
+.form-card {
+    background: var(--surface) !important;
+    color: var(--text);
+    border: 3px solid var(--ink) !important;
+    border-radius: 14px !important;
+    box-shadow: 5px 5px 0 var(--shadow-color) !important;
+    padding: 28px;
+    margin: 12px 0 20px;
+}
+
+.form-card h2 {
+    margin: 0 0 24px;
+    color: var(--text);
+    font-size: 28px;
+}
+
+.form-card label {
+    color: var(--text) !important;
+    font-weight: 700;
+}
+
+.form-card input,
+.form-card textarea,
+.form-card select {
+    background: var(--surface-2) !important;
+    color: var(--text) !important;
+    border: 2px solid var(--ink) !important;
+    border-radius: 9px !important;
+    min-height: 48px;
+    font: inherit;
+}
+
+.form-card textarea {
+    min-height: 120px;
+}
+
+.form-card .cancel-button,
+.form-card .save-button {
+    min-height: 46px;
+    padding: 10px 20px;
+    border: 2px solid var(--ink) !important;
+    border-radius: 9px !important;
+    box-shadow: 3px 3px 0 var(--shadow-color) !important;
+    font-weight: 700;
+}
+
+.form-card .cancel-button {
+    background: var(--surface-2) !important;
+    color: var(--text) !important;
+}
+
+.form-card .save-button {
+    background: var(--accent) !important;
+    color: var(--accent-text) !important;
+}
+
+.back-link {
+    color: var(--text) !important;
+    font-weight: 700;
+}
+
+.back-link:hover {
+    color: var(--accent) !important;
+}
+
+@media (max-width: 700px) {
+    .form-card {
+        padding: 18px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* Ajustes do formulário Nova atividade */
+
+html .form-card {
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    border: 3px solid var(--ink) !important;
+    border-radius: 14px !important;
+    box-shadow: 5px 5px 0 var(--shadow-color) !important;
+    padding: 28px !important;
+    margin: 12px 0 20px !important;
+}
+
+html .form-card h2 {
+    color: var(--text) !important;
+    font-size: 28px;
+    margin: 0 0 24px;
+}
+
+html .form-card label {
+    color: var(--text) !important;
+    font-weight: 700;
+}
+
+html .form-card input,
+html .form-card textarea,
+html .form-card select {
+    width: 100%;
+    min-width: 0;
+    padding: 12px;
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    background: var(--surface-2);
+    color: var(--text);
+    font: inherit;
+}
+
+html .form-card textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+html .form-card input:focus,
+html .form-card textarea:focus,
+html .form-card select:focus {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+
+html .form-card .form-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 20px;
+}
+
+html .form-card .form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+html .form-card .cancel-button,
+html .form-card .save-button {
+    min-height: 44px;
+    padding: 10px 18px;
+    border-radius: 9px;
+    font: inherit;
+    font-weight: 700;
+}
+
+html .form-card .cancel-button {
+    background: var(--surface-2);
+    color: var(--text);
+    border: 2px solid var(--ink);
+}
+
+html .form-card .save-button {
+    background: var(--accent);
+    color: var(--accent-text);
+    border: 2px solid var(--ink);
+}
+
+@media (max-width: 700px) {
+    html .form-card .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 400px) {
+    html .form-card {
+        padding: 18px !important;
+    }
+
+    html .form-card .form-buttons {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    html .form-card .cancel-button,
+    html .form-card .save-button {
+        text-align: center;
+    }
+}
